@@ -1,0 +1,53 @@
+<html>
+<head>
+<meta charset="utf-8">
+    <link   href="css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="jquery.autocomplete.css" />
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="jquery.autocomplete.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</head>
+<body>
+<?php
+include 'conexion.php';
+$codcliente=$_POST['vcod'];
+$con=conexion();
+$sql="select * from clientes where codcliente='".$codcliente."'";
+$res=mysql_query($sql,$con);
+if(mysql_num_rows($res)==0){
+echo '<b>No hay dato</b>';
+}else{
+$fila=mysql_fetch_array($res);
+echo '<table class="table table-striped table-bordered">';
+echo '<tr>';
+
+echo '<th>Servicios</th>';
+echo '<th>Cod</th>';
+echo '<th>Nombre y apellido</th>';
+echo '<th>Telefono</th>';
+echo '<th>Operacion</th>';
+echo '</tr>';
+echo '<tr>';
+echo '<th width=50>';
+
+
+
+
+echo '<a href="historialservicios.php?codcliente='.$fila['codcliente'].'"><img src="img/servicio.jpg"></a>';
+
+echo '</th>';
+echo '<th>'.$fila['codcliente'].'</th>';
+echo '<th>'.$fila['nombreapellido'].'</th>';
+echo '<th>'.$fila['telefono'].'</th>';
+echo '<th>';
+echo '<a href="update.php?codcliente='.$fila['codcliente'].'"><img src="img/editar.png"></a>';
+echo '&nbsp;';
+echo '<a href="delete.php?codcliente='.$fila['codcliente'].'"><img src="img/eliminar.png"></a>';
+
+echo '</th>';
+echo '</tr>';
+echo '</table>';
+}
+?>
+</body>
+</html>

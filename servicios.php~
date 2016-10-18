@@ -1,0 +1,124 @@
+<?php
+/* 
+ * Pagina asegurada
+ */
+require('php_lib/include-pagina-restringida.php'); 
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link   href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/bootstrap.min.js"></script>
+	
+	<!-- jQuery Version 1.11.0 -->
+    <script src="js/jquery-1.11.0.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link href="css/round-about.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="container">
+	    <!-- menu -->
+		<?php 
+		include 'menu.php';
+		?>
+		 <!-- /menu -->
+		 <br><br>
+		<div class="panel panel-info">
+			 <div class="panel-heading">
+				<h2>Servicios</h2>
+			 </div>
+			  <div class="panel-body">
+			  <a href="nuevoservicio.php" class="btn btn-primary pull-left">Agregar nuevo</a>
+					<br><br><br>
+				<form class="form-horizontal" action="resultadobusquedaservicio.php" method="post">
+				<div class="well">				
+					<br>					
+					<div class="form-group" method="post">
+						<label for="inputPassword" class="control-label col-xs-4">Trabajo: </label>
+						<div class="col-xs-4">		
+						<?php							
+							$conexion = new mysqli("localhost","ferremaqonline","central2447","ferremaqonline_dbferremaq",3306); 
+							$sql="select codtrabajo, desctrabajo from trabajos";
+							$result = $conexion->query($sql);
+							$opciones = '<option value="0"> Elige una opcion</option>';
+							while( $fila = $result->fetch_array() )
+							{
+								 $opciones.='<option value="'.$fila["codtrabajo"].'">'.$fila["desctrabajo"].'</option>';
+							  }
+						?>							
+							 <select name="trabajo" id="trabajo">
+								 <?php 
+								 echo $opciones; 
+								 ?>
+							 </select> 														
+						</div>
+					</div>
+
+					<div class="form-group" method="post">
+						<label for="inputPassword" class="control-label col-xs-4">Marca: </label>
+						<div class="col-xs-4">		
+						<?php							
+							$sql="select codmarca, descmarca from marcas";
+							$result = $conexion->query($sql);
+							$opciones = '<option value="0"> Elige una opcion</option>';
+							while( $fila = $result->fetch_array() )
+							{
+								 $opciones.='<option value="'.$fila["codmarca"].'">'.$fila["descmarca"].'</option>';
+							  }
+							?>
+							<div>
+								 <select name="marca">
+									 <?php 
+									 echo $opciones; 
+									 ?>
+								 </select>  
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group" method="post">
+						<label for="inputPassword" class="control-label col-xs-4" action="nuevoservicio.php" method="post">Equipo</label>
+						<div class="col-xs-4">		
+						<?php							
+							$sql="select codequipo, descequipo from equipos";
+							$result = $conexion->query($sql);
+							$opciones = '<option value="0"> Elige una opcion</option>';
+							while( $fila = $result->fetch_array() )
+							{
+								 $opciones.='<option value="'.$fila["codequipo"].'">'.$fila["descequipo"].'</option>';
+							  }
+							?>
+							<div>
+								 <select name="equipo">
+									 <?php 
+									 echo $opciones; 
+									 ?>
+								 </select>  
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<div class="col-xs-offset-4 col-xs-6">
+						<input type="submit" class="btn btn-primary" value="Buscar"></input>
+						<a href="index.php" class="btn btn-primary">Volver</a>
+						</div>
+					</div>
+				</div>
+				</form>
+			  </div>
+			  <div class="panel-footer"><br>
+			  Ferremaq Industrial SRL - A. Sabin 35 bis</div>
+		</div>
+		
+    </div> <!-- /container -->
+  </body>
+</html>

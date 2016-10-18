@@ -1,0 +1,480 @@
+
+<?php
+
+$codservicio = $_GET["variable"];
+
+//Expresiones particulares
+$expresion1 = '14- Piñon';
+$expresion2 = 'NÚMERO';
+$expresion3 = 'DESCRIPCIÓN:';
+$expresion4 = 'CONDICIÓN:';
+$expresion5 = 'Condición:';
+$expresion6 = 'FIRMA Y ACLARACIÓN:';
+$expresion7 = 'Teléfono:';
+
+$servername = "localhost";
+$username = "ferremaqonline";
+$password = "central2447";
+$dbname = "ferremaqonline_dbferremaq";
+
+// Create connection
+$conn = mysqli_connect($servername, $username, $password, $dbname);
+
+$sql = "SELECT T.desctrabajo,C.nombreapellido,C.telefono,C.localidad,M.descmarca,EQ.descequipo,EQ.codtipo,S.fechaing,MO.descmodelo 
+		FROM servicios as S 
+		INNER JOIN trabajos as T ON S.codtrabajo = T.codtrabajo 
+		inner join clientes as C on S.codcliente = C.codcliente 
+		inner join marcas as M on S.codmarca = M.codmarca
+		inner join equipos as EQ on S.codequipo = EQ.codequipo
+		inner join modelos as MO on S.codmodelo= MO.codmodelo		
+		where S.codservicio='" . $codservicio . "'";
+
+$result = mysqli_query($conn, $sql);
+
+while ($row = mysqli_fetch_assoc($result)) {
+    $descripciontrabajo = $row["desctrabajo"];
+    $descripcionnombre = $row["nombreapellido"];
+    $descripciontelefono = $row["telefono"];
+    $descripcionlocalidad = $row["localidad"];
+    $descripcionmarca = $row["descmarca"];
+    $descripcionequipo = $row["descequipo"];
+    $fecha = $row["fechaing"];
+    $descripcionmodelo = $row["descmodelo"];
+    $codtipo = $row["codtipo"];
+}
+
+$fechaingreso = date("d-m-Y", strtotime($fecha));
+
+
+mysqli_close($conn);
+?>
+
+<?php
+
+require('fpdf/fpdf.php');
+
+//Palabras particulares
+    $frase1 = utf8_decode($expresion1);
+    $frase2 = utf8_decode($expresion2);
+    $frase3 = utf8_decode($expresion3);
+    $frase4 = utf8_decode($expresion4);
+    $frase5 = utf8_decode($expresion5);
+    $frase6 = utf8_decode($expresion6);
+    $frase7 = utf8_decode($expresion7);
+
+
+if ($codtipo == 1) {
+    
+    //Electricas
+    $pdf = new FPDF();
+    $pdf->AddPage();
+    $pdf->SetFont('Arial', 'I', 12);
+    $image1 = "img/logomenu.png";
+    $pdf->Cell(115, 10, $pdf->Image($image1, $pdf->GetX(), $pdf->GetY(), 43.78), 0, 0, 'L', false);
+
+    $pdf->Cell(15, 10, 'Fecha: ', 0);
+    $pdf->Cell(15, 10, $fechaingreso, 0);
+    $pdf->Ln(5);
+    $pdf->SetFont('Arial', 'I', 15);
+
+    $pdf->SetXY(125.2, 20);
+    $pdf->Cell(27, 10, $frase5, 0);
+    $pdf->Cell(27, 10, $descripciontrabajo, 0);
+    $pdf->Ln(5);
+
+    $pdf->SetXY(125.2, 28);
+    $pdf->Cell(22, 10, 'ORDEN: ', 0);
+    $pdf->Cell(22, 10, $codservicio, 0);
+
+
+    $pdf->SetFont('Arial', 'I', 12);
+
+    $pdf->SetXY(10, 23);
+    $pdf->Cell(20, 10, 'Cliente: ', 0);
+    $pdf->Cell(20, 10, $descripcionnombre, 0);
+    $pdf->Ln(7);
+    $pdf->Cell(20, 10, $frase7, 0);
+    $pdf->Cell(20, 10, $descripciontelefono, 0);
+    $pdf->Ln(7);
+    $pdf->Cell(20, 10, 'Ciudad: ', 0);
+    $pdf->Cell(20, 10, $descripcionlocalidad, 0);
+
+    $pdf->Ln(10);
+    $pdf->Cell(20, 10, 'Marca: ', 0);
+    $pdf->Cell(20, 10, $descripcionmarca, 0);
+    $pdf->Ln(7);
+    $pdf->Cell(20, 10, 'Equipo: ', 0);
+    $pdf->Cell(20, 10, $descripcionequipo, 0);
+    $pdf->Ln(7);
+    $pdf->Cell(20, 10, 'Modelo: ', 0);
+    $pdf->Cell(20, 10, $descripcionmodelo, 0);
+    $pdf->Ln(10);
+    $pdf->Cell(20, 10, 'Accesorios: ', 0);
+    $pdf->Ln(7);
+
+    //Para marcar con cruz
+    $pdf->Cell(35, 10, '1- Mandril ', 0);
+    $pdf->Cell(35, 10, '2- Rod ', 0);
+    $pdf->Cell(35, 10, '3- Rotor ', 0);
+    $pdf->Cell(35, 10, '4- Campo ', 0);
+    $pdf->Ln(10);
+    $pdf->Cell(35, 10, '5- Eng Int. ', 0);
+    $pdf->Cell(35, 10, '6- Eng Salida ', 0);
+    $pdf->Cell(35, 10, '7- Carbones ', 0);
+    $pdf->Cell(35, 10, '8- Eng. Carb ', 0);
+    $pdf->Ln(10);
+    $pdf->Cell(35, 10, '9- Interruptor ', 0);
+    $pdf->Cell(35, 10, '10- Cabezal ', 0);
+    $pdf->Cell(35, 10, '11- Tapa Int. ', 0);
+    $pdf->Cell(35, 10, '12- Cable ', 0);
+    $pdf->Ln(10);
+    $pdf->Cell(35, 10, '13- Corona ', 0);
+    $pdf->Cell(35, 10, $frase1, 0);
+    $pdf->Cell(35, 10, '15- Carcaza ', 0);
+    $pdf->Cell(35, 10, '16- Eje salida ', 0);
+    $pdf->Ln(10);
+    $pdf->Cell(35, 10, '17- Motor ', 0);
+    $pdf->Cell(35, 10, '18- Lav/Eng ', 0);
+
+//Condiciones del servicio
+    $pdf->Ln(10);
+    $pdf->Cell(45, 10, 'REPARO: ', 0);
+    $pdf->Cell(45, 10, 'PRESUPUESTO: ', 0);
+    $pdf->Cell(45, 10, $frase6, 0);
+    $pdf->Ln(10);
+    $pdf->Cell(45, 10, 'FECHA: ', 0);
+    $pdf->Cell(45, 10, 'FECHA: ', 0);
+    $pdf->Cell(45, 10, 'FECHA: ', 0);
+    $pdf->Cell(55, 10, 'TOTAL $: ', 0);
+    $pdf->Ln(7);
+    $pdf->Cell(20, 10, '-------------------------------------------------------------------------------------------------------------------------------------- ', 0);
+
+    //Para el tecnico y la maquina
+    $pdf->Ln(7);
+    $pdf->Cell(18, 10, 'ORDEN: ', 0);
+    $pdf->Cell(15, 10, $codservicio, 0);
+    $pdf->Cell(22, 10, $frase5, 0);
+    $pdf->Cell(34, 10, $descripciontrabajo, 0);
+    $pdf->Cell(16, 10, 'Marca: ', 0);
+    $pdf->Cell(32, 10, $descripcionmarca, 0);
+    $pdf->Ln(8);
+
+    $pdf->Cell(16, 10, 'Equipo: ', 0);
+    $pdf->Cell(50, 10, $descripcionequipo, 0);
+    $pdf->Cell(16, 10, 'Modelo: ', 0);
+    $pdf->Cell(36, 10, $descripcionmodelo, 0);
+    $pdf->Ln(10);
+
+    //Para marcar con cruz
+    $pdf->Cell(35, 10, '1- Mandril ', 0);
+    $pdf->Cell(35, 10, '2- Rod ', 0);
+    $pdf->Cell(35, 10, '3- Rotor ', 0);
+    $pdf->Cell(35, 10, '4- Campo ', 0);
+    $pdf->Ln(10);
+    $pdf->Cell(35, 10, '5- Eng Int. ', 0);
+    $pdf->Cell(35, 10, '6- Eng Salida ', 0);
+    $pdf->Cell(35, 10, '7- Carbones ', 0);
+    $pdf->Cell(35, 10, '8- Eng. Carb ', 0);
+    $pdf->Ln(10);
+    $pdf->Cell(35, 10, '9- Interruptor ', 0);
+    $pdf->Cell(35, 10, '10- Cabezal ', 0);
+    $pdf->Cell(35, 10, '11- Tapa Int. ', 0);
+    $pdf->Cell(35, 10, '12- Cable ', 0);
+    $pdf->Ln(10);
+    $pdf->Cell(35, 10, '13- Corona ', 0);
+    $pdf->Cell(35, 10, $frase1, 0);
+    $pdf->Cell(35, 10, '15- Carcaza ', 0);
+    $pdf->Cell(35, 10, '16- Eje salida ', 0);
+    $pdf->Ln(10);
+    $pdf->Cell(35, 10, '17- Motor ', 0);
+    $pdf->Cell(35, 10, '18- Lav/Eng ', 0);
+
+    //Condiciones del servicio
+    $pdf->Ln(10);
+    $pdf->Cell(45, 10, 'REPARO: ', 0);
+    $pdf->Cell(45, 10, $frase3, 0);
+    $pdf->Cell(45, 10, $frase4, 0);
+    $pdf->Ln(10);
+    $pdf->Cell(45, 10, 'FECHA: ', 0);
+    $pdf->Cell(45, 10, 'FECHA: ', 0);
+    $pdf->Cell(45, 10, 'FECHA: ', 0);
+    $pdf->Ln(8);
+    $pdf->Cell(20, 10, '-------------------------------------------------------------------------------------------------------------------------------------- ', 0);
+
+    $pdf->Ln(7);
+    $image1 = "img/logomenu.png";
+    $pdf->Cell(80, 20, $pdf->Image($image1, $pdf->GetX(), $pdf->GetY(), 43.78), 0, 0, 'L', false);
+
+    $pdf->SetXY(90, 244);
+    $pdf->Cell(16, 10, 'Cliente: ', 0);
+    $pdf->Cell(20, 10, $descripcionnombre, 0);
+    $pdf->SetXY(90, 250);
+    $pdf->Cell(16, 10, 'Marca: ', 0);
+    $pdf->Cell(20, 10, $descripcionmarca, 0);
+    $pdf->SetXY(90, 256);
+    $pdf->Cell(16, 10, 'Equipo: ', 0);
+    $pdf->Cell(20, 10, $descripcionequipo, 0);
+    $pdf->SetXY(90, 262);
+    $pdf->Cell(17, 10, 'Modelo: ', 0);
+    $pdf->Cell(21, 10, $descripcionmodelo, 0);	
+
+    $pdf->SetFont('Arial', 'I', 9);
+    $pdf->SetXY(10, 254);
+    $pdf->Cell(16, 10, 'Domicilio: ', 0);
+    $pdf->Cell(16, 10, 'A. Sabin 107 esq. Avellaneda - Rosario', 0);
+    $pdf->Ln(4);
+    $pdf->Cell(14, 10, $frase7, 0);
+    $pdf->Cell(18, 10, '(0341) - 4352835/36', 0);
+    $pdf->Ln(4);
+    $pdf->Cell(12, 10, 'Correo: ', 0);
+    $pdf->Cell(20, 10, 'contacto@ferremaqsrl.com', 0);
+    $pdf->Ln(4);
+    $pdf->Cell(10, 10, 'Web: ', 0);
+    $pdf->Cell(26, 10, 'www.ferremaqsrl.com', 0);
+
+    $pdf->SetFont('Arial', 'I', 22);
+    $pdf->SetXY(160, 248);
+    $pdf->Cell(27, 10, 'ORDEN: ', 0);
+    $pdf->SetXY(160, 258);
+    $pdf->Cell(27, 10, $codservicio, 1);
+
+    $pdf->SetFont('Arial', 'I', 42);
+    $pdf->SetXY(157, 185);
+    $pdf->Cell(27, 10, $codservicio, 0);
+
+    $pdf->SetFont('Arial', 'I', 25);
+    $pdf->SetXY(150, 145);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 150);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 155);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 160);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 165);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 170);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 175);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 180);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 185);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 190);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 195);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 200);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 205);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 210);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 215);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 220);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 225);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 230);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->Output();
+} else {
+    
+    //A explosion
+    $pdf = new FPDF();
+    $pdf->AddPage();
+    $pdf->SetFont('Arial', 'I', 12);
+    $image1 = "img/logomenu.png";
+    $pdf->Cell(115, 10, $pdf->Image($image1, $pdf->GetX(), $pdf->GetY(), 43.78), 0, 0, 'L', false);
+
+    $pdf->Cell(15, 10, 'Fecha: ', 0);
+    $pdf->Cell(15, 10, $fechaingreso, 0);
+    $pdf->Ln(5);
+    $pdf->SetFont('Arial', 'I', 15);
+
+    $pdf->SetXY(125.2, 20);
+    $pdf->Cell(27, 10, $frase5, 0);
+    $pdf->Cell(27, 10, $descripciontrabajo, 0);
+    $pdf->Ln(5);
+
+    $pdf->SetXY(125.2, 28);
+    $pdf->Cell(22, 10, 'ORDEN: ', 0);
+    $pdf->Cell(22, 10, $codservicio, 0);
+
+
+    $pdf->SetFont('Arial', 'I', 12);
+    $pdf->SetXY(10, 23);
+    $pdf->Cell(20, 10, 'Cliente: ', 0);
+    $pdf->Cell(20, 10, $descripcionnombre, 0);
+    $pdf->Ln(7);
+    $pdf->Cell(20, 10, $frase7, 0);
+    $pdf->Cell(20, 10, $descripciontelefono, 0);
+    $pdf->Ln(7);
+    $pdf->Cell(20, 10, 'Ciudad: ', 0);
+    $pdf->Cell(20, 10, $descripcionlocalidad, 0);
+
+    $pdf->Ln(10);
+    $pdf->Cell(20, 10, 'Marca: ', 0);
+    $pdf->Cell(20, 10, $descripcionmarca, 0);
+    $pdf->Ln(7);
+    $pdf->Cell(20, 10, 'Equipo: ', 0);
+    $pdf->Cell(20, 10, $descripcionequipo, 0);
+    $pdf->Ln(7);
+    $pdf->Cell(20, 10, 'Modelo: ', 0);
+    $pdf->Cell(20, 10, $descripcionmodelo, 0);
+    $pdf->Ln(10);
+    $pdf->Cell(20, 10, 'Accesorios: ', 0);
+    $pdf->Ln(7);
+
+//Para marcar con cruz
+    $pdf->Cell(35, 10, '..............................................................................................................................................................', 0);
+    $pdf->Ln(10);
+    $pdf->Cell(35, 10, '..............................................................................................................................................................', 0);
+    $pdf->Ln(10);
+    $pdf->Cell(35, 10, '..............................................................................................................................................................', 0);
+    $pdf->Ln(10);
+    $pdf->Cell(35, 10, '..............................................................................................................................................................', 0);
+    $pdf->Ln(10);
+    $pdf->Cell(35, 10, '..............................................................................................................................................................', 0);
+    
+
+    //Condiciones del servicio
+    $pdf->Ln(10);
+    $pdf->Cell(45, 10, 'REPARO: ', 0);
+    $pdf->Cell(45, 10, 'PRESUPUESTO: ', 0);
+    $pdf->Cell(45, 10, $frase6, 0);
+    $pdf->Ln(10);
+    $pdf->Cell(45, 10, 'FECHA: ', 0);
+    $pdf->Cell(45, 10, 'FECHA: ', 0);
+    $pdf->Cell(45, 10, 'FECHA: ', 0);
+    $pdf->Cell(55, 10, 'TOTAL $: ', 0);
+    $pdf->Ln(7);
+    $pdf->Cell(20, 10, '-------------------------------------------------------------------------------------------------------------------------------------- ', 0);
+
+
+//Para el tecnico y la maquina
+    $pdf->Ln(7);
+    $pdf->Cell(18, 10, 'ORDEN: ', 0);
+    $pdf->Cell(15, 10, $codservicio, 0);
+    $pdf->Cell(22, 10, $frase5, 0);
+    $pdf->Cell(34, 10, $descripciontrabajo, 0);
+    $pdf->Cell(16, 10, 'Marca: ', 0);
+    $pdf->Cell(32, 10, $descripcionmarca, 0);
+    $pdf->Ln(8);
+
+    $pdf->Cell(16, 10, 'Equipo: ', 0);
+    $pdf->Cell(50, 10, $descripcionequipo, 0);
+    $pdf->Cell(16, 10, 'Modelo: ', 0);
+    $pdf->Cell(36, 10, $descripcionmodelo, 0);
+    $pdf->Ln(10);
+
+//Para marcar con cruz
+    $pdf->Cell(35, 10, '....................................................................................................................', 0);
+    $pdf->Ln(10);
+    $pdf->Cell(35, 10, '....................................................................................................................', 0);
+    $pdf->Ln(10);
+    $pdf->Cell(35, 10, '....................................................................................................................', 0);
+    $pdf->Ln(10);
+    $pdf->Cell(35, 10, '....................................................................................................................', 0);
+    $pdf->Ln(10);
+    $pdf->Cell(35, 10, '....................................................................................................................', 0);
+
+
+    //Condiciones del servicio
+    $pdf->Ln(10);
+    $pdf->Cell(45, 10, 'REPARO: ', 0);
+    $pdf->Cell(45, 10, $frase3, 0);
+    $pdf->Cell(45, 10, $frase4, 0);
+    $pdf->Ln(10);
+    $pdf->Cell(45, 10, 'FECHA: ', 0);
+    $pdf->Cell(45, 10, 'FECHA: ', 0);
+    $pdf->Cell(45, 10, 'FECHA: ', 0);
+    $pdf->Ln(8);
+    $pdf->Cell(20, 10, '-------------------------------------------------------------------------------------------------------------------------------------- ', 0);
+
+    $pdf->Ln(7);
+    $image1 = "img/logomenu.png";
+    $pdf->Cell(80, 20, $pdf->Image($image1, $pdf->GetX(), $pdf->GetY(), 43.78), 0, 0, 'L', false);
+
+    $pdf->SetXY(90, 244);
+    $pdf->Cell(16, 10, 'Cliente: ', 0);
+    $pdf->Cell(20, 10, $descripcionnombre, 0);
+    $pdf->SetXY(90, 250);
+    $pdf->Cell(16, 10, 'Marca: ', 0);
+    $pdf->Cell(20, 10, $descripcionmarca, 0);
+    $pdf->SetXY(90, 256);
+    $pdf->Cell(16, 10, 'Equipo: ', 0);
+    $pdf->Cell(20, 10, $descripcionequipo, 0);
+    $pdf->SetXY(90, 262);
+    $pdf->Cell(17, 10, 'Modelo: ', 0);
+    $pdf->Cell(21, 10, $descripcionmodelo, 0);
+
+    $pdf->SetFont('Arial', 'I', 9);
+    $pdf->SetXY(10, 254);
+    $pdf->Cell(16, 10, 'Domicilio: ', 0);
+    $pdf->Cell(16, 10, 'A. Sabin 107 esq. Avellaneda - Rosario', 0);
+    $pdf->Ln(4);
+    $pdf->Cell(14, 10, $frase7, 0);
+    $pdf->Cell(18, 10, '(0341) - 4352835/36', 0);
+    $pdf->Ln(4);
+    $pdf->Cell(12, 10, 'Correo: ', 0);
+    $pdf->Cell(20, 10, 'contacto@ferremaqsrl.com', 0);
+    $pdf->Ln(4);
+    $pdf->Cell(10, 10, 'Web: ', 0);
+    $pdf->Cell(26, 10, 'www.ferremaqsrl.com', 0);
+
+    $pdf->SetFont('Arial', 'I', 22);
+    $pdf->SetXY(160, 248);
+    $pdf->Cell(27, 10, 'ORDEN: ', 0);
+    $pdf->SetXY(160, 258);
+    $pdf->Cell(27, 10, $codservicio, 1);
+
+    $pdf->SetFont('Arial', 'I', 42);
+    $pdf->SetXY(157, 185);
+    $pdf->Cell(27, 10, $codservicio, 0);
+
+    $pdf->SetFont('Arial', 'I', 25);
+    $pdf->SetXY(150, 145);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 150);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 155);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 160);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 165);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 170);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 175);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 180);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 185);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 190);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 195);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 200);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 205);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 210);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 215);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 220);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 225);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->SetXY(150, 230);
+    $pdf->Cell(10, 10, '.', 0);
+    $pdf->Output();
+}
+?>
+
+
+

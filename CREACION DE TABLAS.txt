@@ -1,0 +1,96 @@
+-- Clientes
+create table Clientes(codcliente INT NOT NULL AUTO_INCREMENT PRIMARY KEY,nombreapellido varchar(80),
+empresa varchar(50),domicilio varchar(50), telefono varchar(16),mail varchar(50))
+
+-- Inserto cliente
+insert into clientes(nombreapellido,empresa,domicilio,telefono,mail)
+values('Matias Fabrizzi','AMR','Corrientes 950','153119592','matiasfabrizzi@gmail.com')
+
+
+-- Equipos
+create table equipos(codequipo INT NOT NULL AUTO_INCREMENT PRIMARY KEY, descequipo varchar(80))
+
+-- Trabajos
+create table trabajos(codtrabajo INT NOT NULL AUTO_INCREMENT PRIMARY KEY, desctrabajo varchar(50))
+
+-- Inserto Trabajos
+insert into trabajos(desctrabajo)
+values('Reparacion particular'),
+('Reparacion garantia')
+
+
+
+-- Estados
+create table estados(codestado INT NOT NULL AUTO_INCREMENT PRIMARY KEY, descestado varchar(30))
+
+-- Inserto Estados
+insert into estados(descestado)
+values
+('Solucionado'),
+('Pendiente'),
+('En espera por repuestos'),
+('Sin solucion')
+
+-- Marcas
+create table marcas(codmarca INT NOT NULL AUTO_INCREMENT PRIMARY KEY, descmarca varchar(80))
+
+ALTER TABLE servicios
+ADD FOREIGN KEY fk_marcas(codmarca)
+REFERENCES marcas(codmarca)
+
+-- Tecnicos
+create table tecnicos(codtecnico INT NOT NULL AUTO_INCREMENT PRIMARY KEY, nombreapellido varchar(50))
+
+ALTER TABLE servicios
+ADD FOREIGN KEY fk_tecnicos(codtecnico)
+REFERENCES tecnicos(codtecnico)
+
+-- Servicios
+create table servicios(codservicio INT NOT NULL AUTO_INCREMENT PRIMARY KEY,codtrabajo int, 
+fechaing date,fechafin date, codestado int, codequipo int,codcliente int)
+
+ALTER TABLE servicios
+ADD FOREIGN KEY fk_trabajo(codtrabajo)
+REFERENCES trabajos(codtrabajo)
+
+ALTER TABLE servicios
+ADD FOREIGN KEY fk_equipos(codequipo)
+REFERENCES equipos(codequipo)
+
+ALTER TABLE servicios
+ADD FOREIGN KEY fk_estados(codestado)
+REFERENCES estados(codestado)
+
+ALTER TABLE servicios
+ADD FOREIGN KEY fk_clientes(codcliente)
+REFERENCES clientes(codcliente)
+
+
+-- Creando provincias
+create table provincias(codprovincia INT NOT NULL AUTO_INCREMENT PRIMARY KEY, descprovincia varchar(100))
+
+insert into provincias(descprovincia)
+values
+('Santa Fe'),
+('Buenos Aires'),
+('Capital Federal'),
+('Catamarca'),
+('Chaco'),
+('Chubut'),
+('Cordoba'),
+('Corrientes'),
+('Entre Rios'),
+('Formosa'),
+('Jujuy'),
+('La Pampa'),
+('La Rioja'),
+('Mendoza'),
+('Misiones'),
+('Neuquen'),
+('Río Negro'),
+('Salta'),
+('San Juan'),
+('San Luis'),
+('Santa Cruz'),
+('Santiago Del Estero'),
+('Tierra Del Fuego')

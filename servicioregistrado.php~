@@ -1,0 +1,92 @@
+<?php
+/*
+ * Pagina asegurada
+ */
+require('php_lib/include-pagina-restringida.php'); //el incude para vericar que estoy logeado. Si falla salta a la página de login.php
+?>
+
+<html>
+    <head>
+        <link   href="css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/datepicker.css">
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <script src="js/main.js"></script>
+        <script src="js/jquery-1.11.0.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <!-- menu -->
+            <?php
+            include 'menu.php';
+            ?>
+            <!-- /menu -->
+            <br><br><br><br><br>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h2>Servicios</h2>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" action="create.php" method="post">				  
+                        <div class="well">
+                            <br>
+                            <?php
+                            include 'database.php';
+
+			    $codservicio = null;
+                            $pdo = Database::connect();
+
+                            $codtrabajo = $_POST['trabajo'];
+                            $codmarca = $_POST['marca'];
+                            $codequipo = $_POST['equipo'];
+                            $codtecnico = $_POST['tecnico'];
+                            $observaciones = $_POST['observaciones'];
+                            $codcliente = $_POST['clientes'];
+                            $costo = $_POST['costo'];
+                            $fechaing = date("Y/m/d");
+                            $codmodelo = $_POST['modelos'];
+
+                            if ($codtrabajo != 0 && $codmarca != 0 && $codequipo != 0 && $codtecnico != 0 && $codcliente != 0 && $codmodelo != 0) {
+                                $sql = "INSERT INTO servicios (codtrabajo,fechaing,codequipo,codcliente,codmarca,
+					codtecnico,costo,observaciones,codmodelo) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                                $q = $pdo->prepare($sql);
+                                $q->execute(array($codtrabajo, $fechaing, $codequipo, $codcliente, $codmarca,
+                                    $codtecnico, $costo, $observaciones, $codmodelo));
+
+                                $codservicio = $pdo->lastInsertId();                               
+                                Database::disconnect();
+                                
+                                echo "Se registró el Servicio $codservicio.";
+                                echo '<br>';
+                                echo '<br>';                 
+                                echo '<a href="imprimeservicio.php?variable=<?php echo $codservicio; ?>" class="btn btn-primary" target="_blank">Imprimir</a>';
+                                echo '&nbsp';
+                                echo '&nbsp';
+                                echo '<a href="servicios.php" class="btn btn-primary">Volver</a>';
+
+                            }
+                            else{
+                                echo "No se pudo registrar el servicio, ya que los campos ingresados son invalidos";
+                                echo '<br>';
+                                echo '<br>';
+                                echo '<a href="servicios.php" class="btn btn-primary">Volver</a>';
+                            }
+                        
+                            ?>
+                            <br>
+                            
+                            
+
+                    </form>
+                </div>	
+            </div>	
+            <?php
+            include 'pie.php';
+            ?>
+
+        </div>
+
+    </div> <!-- /container -->
+</body>
+</html>
